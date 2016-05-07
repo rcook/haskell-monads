@@ -15,18 +15,23 @@ instance Monad ValueOrDetails where
     return                      = Value
 
 -- use it to get the max value of an integer list where
--- values are requried to be between two given values
+-- values are required to be in the interval [l,u]
+-- if the list is empty we return l
 
 maxInRange        :: Integer -> Integer -> [Integer] -> ValueOrDetails Integer
-maxInRange l u []     = return l
-maxInRange l u (x:xs) = 
-             do           
-               v <- maxInRange l u xs
-               r <- if x > u then (TooLargeError (show x)) 
-                             else if x < l then (TooSmallError (show x))
-                             else return (max x v)
-               return r
+maxInRange l u values     = maxInRangeRec l u (return l) values
 
+maxInRangeRec     :: Integer -> Integer -> ValueOrDetails Integer -> 
+		     	     [Integer] -> ValueOrDetails Integer
+maxInRangeRec l u vod []     = vod
+maxInRangeRec l u vod (x:xs) = 
+             do           
+	       prev <- vod
+               nvod <- if x > u then (TooLargeError (show x)) 
+                       else if x < l then (TooSmallError (show x))
+                       else return (max x prev)
+               rest <- maxInRangeRec l u (return nvod) xs
+               return rest
 
 -- need a way to print the result
 
@@ -36,8 +41,8 @@ instance Show a => Show (ValueOrDetails a) where
   show (TooSmallError s) = "Value too small: " ++ s
 
 l1 = [11,12,10,17,13]
-l2 = [11,5,10,17,13]
-l3 = [11,25,10,17,13]
+l2 = [11,5,10,17,2,13]
+l3 = [11,25,10,17,80,13]
 
 main = do
          print (maxInRange 10 20 l1)
