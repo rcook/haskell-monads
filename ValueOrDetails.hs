@@ -18,15 +18,15 @@ instance Monad ValueOrDetails where
 -- values are requried to be between two given values
 
 maxInRange        :: Integer -> Integer -> [Integer] -> ValueOrDetails Integer
-maxInRange l u []     = (Value l)
+maxInRange l u []     = return l
 maxInRange l u (x:xs) = 
-           let rest = maxInRange l u xs in
-             case rest of Value v -> 
-                             if x > u then (TooLargeError (show x)) 
+             do           
+               v <- maxInRange l u xs
+               r <- if x > u then (TooLargeError (show x)) 
                              else if x < l then (TooSmallError (show x))
-                             else (Value (max x v))
-                          TooLargeError s -> TooLargeError s
-                          TooSmallError s -> TooSmallError s
+                             else return (max x v)
+               return r
+
 
 -- need a way to print the result
 
