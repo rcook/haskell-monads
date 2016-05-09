@@ -13,15 +13,11 @@ data ValueOrDetails v =
 -- use it to define a monad
 
 instance Functor ValueOrDetails where
-    fmap f (Value v)            = Value (f v)
-    fmap f (TooLargeError s)    = TooLargeError s
-    fmap f (TooSmallError s)    = TooSmallError s
+    fmap = liftM
 
 instance Applicative ValueOrDetails where
     pure                        = Value
-    (Value f) <*> v             = fmap f v
-    (TooLargeError s) <*> _     = TooLargeError s
-    (TooSmallError s) <*> _     = TooSmallError s
+    (<*>)                       = ap
 
 instance Monad ValueOrDetails where
     (TooLargeError s) >>= f     = (TooLargeError s)
