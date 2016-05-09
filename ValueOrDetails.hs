@@ -18,6 +18,10 @@ instance Monad ValueOrDetails where
     (Value e) >>= f             = f e
     return                      = Value
 
+tooSmall v = (TooSmallError (show v))
+
+tooLarge v = (TooLargeError (show v))
+
 -- need a way to print the monad
 
 instance Show a => Show (ValueOrDetails a) where
@@ -40,8 +44,8 @@ maxInRangeRec l u vod []     = vod
 maxInRangeRec l u vod (x:xs) = 
              do           
 	       prev <- vod
-               nvod <- if x > u then (TooLargeError (show x)) 
-                       else if x < l then (TooSmallError (show x))
+               nvod <- if x > u then (tooLarge x) 
+                       else if x < l then (tooSmall x)
                        else return (max x prev)
                rest <- maxInRangeRec l u (return nvod) xs
                return rest
@@ -50,8 +54,8 @@ maxInRangeRec l u vod (x:xs) =
 
 f :: Integer -> Integer -> Integer -> Integer -> ValueOrDetails Integer
 f l u acc val = 
-  if val > u then (TooLargeError (show val)) 
-             else if val < l then (TooSmallError (show val))
+  if val > u then (tooLarge val) 
+             else if val < l then (tooSmall val)
              else return (max val acc)
 
 maxInRangeF :: Integer -> Integer -> [Integer] -> ValueOrDetails Integer
