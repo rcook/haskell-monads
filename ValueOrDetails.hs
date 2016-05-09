@@ -12,11 +12,22 @@ data ValueOrDetails v =
 
 -- use it to define a monad
 
+instance Functor ValueOrDetails where
+    fmap f (Value v)            = Value (f v)
+    fmap f (TooLargeError s)    = TooLargeError s
+    fmap f (TooSmallError s)    = TooSmallError s
+
+instance Applicative ValueOrDetails where
+    pure                        = Value
+    (Value f) <*> v             = fmap f v
+    (TooLargeError s) <*> _     = TooLargeError s
+    (TooSmallError s) <*> _     = TooSmallError s
+
 instance Monad ValueOrDetails where
     (TooLargeError s) >>= f     = (TooLargeError s)
     (TooSmallError s) >>= f     = (TooSmallError s)
     (Value e) >>= f             = f e
-    return                      = Value
+    return                      = pure
 
 tooSmall :: v -> ValueOrDetails v
 tooSmall v = (TooSmallError (show v))
@@ -68,6 +79,14 @@ l2 = [11,5,10,17,2,13]
 l3 = [11,25,10,17,80,13]
 
 main = do
+         -- Use Functor instance
+         print $ fmap (+100) (Value 200)
+         print $ (+100) <$> Value 200
+
+         -- Use Applicative instance
+         print $ pure (+100) <*> Value 200
+         print $ (+) <$> Value 100 <*> Value 200
+
          print "recursive version using do ..."
          print (maxInRange 10 20 l1)
          print (maxInRange 10 20 l2)
