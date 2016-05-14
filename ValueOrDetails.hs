@@ -18,8 +18,10 @@ instance Monad ValueOrDetails where
     (Value e) >>= f             = f e
     return                      = Value
 
+tooSmall :: v -> ValueOrDetails v
 tooSmall v = (TooSmallError (show v))
 
+tooLarge :: v -> ValueOrDetails v
 tooLarge v = (TooLargeError (show v))
 
 -- need a way to print the monad
@@ -39,11 +41,11 @@ maxInRange        :: Integer -> Integer -> [Integer] -> ValueOrDetails Integer
 maxInRange l u values     = maxInRangeRec l u (return l) values
 
 maxInRangeRec     :: Integer -> Integer -> ValueOrDetails Integer -> 
-		     	     [Integer] -> ValueOrDetails Integer
+                             [Integer] -> ValueOrDetails Integer
 maxInRangeRec l u vod []     = vod
 maxInRangeRec l u vod (x:xs) = 
              do           
-	       prev <- vod
+               prev <- vod
                nvod <- if x > u then (tooLarge x) 
                        else if x < l then (tooSmall x)
                        else return (max x prev)
@@ -68,9 +70,9 @@ l3 = [11,25,10,17,80,13]
 main = do
          print "recursive version using do ..."
          print (maxInRange 10 20 l1)
-	 print (maxInRange 10 20 l2)
-	 print (maxInRange 10 20 l3)
+         print (maxInRange 10 20 l2)
+         print (maxInRange 10 20 l3)
          print "foldM version ..."
          print (maxInRangeF 10 20 l1)
-	 print (maxInRangeF 10 20 l2)
-	 print (maxInRangeF 10 20 l3)
+         print (maxInRangeF 10 20 l2)
+         print (maxInRangeF 10 20 l3)
