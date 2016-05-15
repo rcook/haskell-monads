@@ -13,10 +13,10 @@ turn out to be interesting.
 
 | Example | Description |
 | ------- | ----------- |
-| [ValueOrDetails.hs] | Represent correct values or two error states -- kind of like Control.Monad.Either but with an extra error state. |
+| [ValueOrDetails.hs](ValueOrDetails.hs) | Represent correct values or two error states -- kind of like Control.Monad.Either but with an extra error state. |
 
 ## Making Use of Tools in Control.Monad
 
 | Example | Description |
 | ------- | ----------- |
-| [StatefulSymbolGen.hs] | Use the State monad for generating unique symbols. |
+| [StatefulSymbolGen.hs](StatefulSymbolGen.hs) | Use the State monad for generating unique symbols. |
