@@ -25,10 +25,10 @@ instance Monad ValueOrDetails where
     (Value e) >>= f             = f e
     return                      = pure
 
-tooSmall :: v -> ValueOrDetails v
+tooSmall :: Show v => v -> ValueOrDetails v
 tooSmall v = (TooSmallError (show v))
 
-tooLarge :: v -> ValueOrDetails v
+tooLarge :: Show v => v -> ValueOrDetails v
 tooLarge v = (TooLargeError (show v))
 
 -- need a way to print the monad
