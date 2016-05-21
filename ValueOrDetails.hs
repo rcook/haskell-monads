@@ -83,12 +83,12 @@ l3 = [11,25,10,17,80,13]
 main :: IO ()
 main = do
          -- Use Functor instance
-         print $ fmap (+100) (Value 200)
-         print $ (+100) <$> Value 200
+         print $ fmap (+100) (Value (200 :: Int))
+         print $ (+100) <$> Value (200 :: Int)
 
          -- Use Applicative instance
-         print $ pure (+100) <*> Value 200
-         print $ (+) <$> Value 100 <*> Value 200
+         print $ pure (+100) <*> Value (200 :: Int)
+         print $ (+) <$> Value 100 <*> Value (200 :: Int)
 
          print "recursive version using do ..."
          print (maxInRange 10 20 l1)
