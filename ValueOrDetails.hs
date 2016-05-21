@@ -61,14 +61,15 @@ maxInRangeRec l u vod (x:xs) =
 
 -- alternate version based on foldM
 
-f :: Integer -> Integer -> Integer -> Integer -> ValueOrDetails Integer
-f l u acc val = 
-  if val > u then (tooLarge val) 
-             else if val < l then (tooSmall val)
-             else return (max val acc)
-
 maxInRangeF :: Integer -> Integer -> [Integer] -> ValueOrDetails Integer
 maxInRangeF l u values = foldM (f l u) l values
+    where
+        f :: Integer -> Integer -> Integer -> Integer -> ValueOrDetails Integer
+        f l' u' acc val =
+          if val > u' then (tooLarge val)
+                     else if val < l' then (tooSmall val)
+                     else return (max val acc)
+
 
 l1 = [11,12,10,17,13]
 l2 = [11,5,10,17,2,13]
