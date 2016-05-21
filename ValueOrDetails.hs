@@ -20,8 +20,8 @@ instance Applicative ValueOrDetails where
     (<*>)                       = ap
 
 instance Monad ValueOrDetails where
-    (TooLargeError s) >>= f     = (TooLargeError s)
-    (TooSmallError s) >>= f     = (TooSmallError s)
+    (TooLargeError s) >>= _     = TooLargeError s
+    (TooSmallError s) >>= _     = TooSmallError s
     (Value e) >>= f             = f e
     return                      = pure
 
@@ -49,7 +49,7 @@ maxInRange l u values     = maxInRangeRec l u (return l) values
 
 maxInRangeRec     :: Integer -> Integer -> ValueOrDetails Integer -> 
                              [Integer] -> ValueOrDetails Integer
-maxInRangeRec l u vod []     = vod
+maxInRangeRec _ _ vod []     = vod
 maxInRangeRec l u vod (x:xs) = 
              do           
                prev <- vod
