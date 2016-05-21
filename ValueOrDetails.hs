@@ -71,10 +71,16 @@ maxInRangeF l u values = foldM (f l u) l values
                      else return (max val acc)
 
 
+l1 :: [Integer]
 l1 = [11,12,10,17,13]
+
+l2 :: [Integer]
 l2 = [11,5,10,17,2,13]
+
+l3 :: [Integer]
 l3 = [11,25,10,17,80,13]
 
+main :: IO ()
 main = do
          -- Use Functor instance
          print $ fmap (+100) (Value 200)
