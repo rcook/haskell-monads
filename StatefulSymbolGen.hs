@@ -38,7 +38,7 @@ advanceLo (hi,lo) = (hi,lo+1)
 
 -- |Advance the high counter while zeroing the low one
 advanceHi :: SymbolCounter -> SymbolCounter
-advanceHi (hi,lo) = (hi+1,0)
+advanceHi (hi,_) = (hi+1,0)
                  
 -- |Create a symbol and advance the low counter
 makeSymbol :: SymbolCounter -> String
@@ -50,8 +50,8 @@ These are the State monad operations.
 
 -- |Initialize the state.
 -- Notice the () since nothing is returned.
-initsym :: State SymbolCounter ()
-initsym = state $ \c -> ((), initialCounters)
+--initsym :: State SymbolCounter ()
+--initsym = state $ \c -> ((), initialCounters)
 
 -- |Generate a symbol and advance the state normally.
 -- Notice that a String is returned.
@@ -70,14 +70,15 @@ nextseq = state $ \c -> ((), advanceHi c)
 -- with several states, or kinds of state, at the same time. How?
 gymnastics :: State SymbolCounter String 
 gymnastics = do
-  a <- getsym
-  b <- getsym
+  _ <- getsym
+  _ <- getsym
   nextseq -- new sequence of symbols ('hi' incremented, 'lo' zeroed)
-  c <- getsym
+  _ <- getsym
   d <- getsym
   return d
 
 -- Is this the right way to do set it up?
+main :: IO ()
 main = do
   print (evalState gymnastics initialCounters)
   
